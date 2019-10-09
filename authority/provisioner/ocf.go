@@ -7,7 +7,7 @@ import (
 	stepProvisioner "github.com/smallstep/certificates/authority/provisioner"
 )
 
-const OCFPrefix = "OCF"
+const OCFPrefix = "ocf-"
 
 // OCF is the acme provisioner type, an entity that can authorize the OCF
 // provisioning flow.
