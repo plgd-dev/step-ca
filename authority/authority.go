@@ -12,7 +12,9 @@ import (
 	stepAuthority "github.com/smallstep/certificates/authority"
 	stepProvisioner "github.com/smallstep/certificates/authority/provisioner"
 	"github.com/smallstep/certificates/db"
+	"github.com/smallstep/cli/crypto/pemutil"
 	"github.com/smallstep/cli/crypto/tlsutil"
+	"github.com/smallstep/cli/crypto/x509util"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -22,8 +24,9 @@ const (
 
 // Authority implements the Certificate Authority internal interface.
 type Authority struct {
-	config   *Config
-	stepAuth *stepAuthority.Authority
+	config               *Config
+	stepAuth             *stepAuthority.Authority
+	intermediateIdentity *x509util.Identity
 }
 
 type Option interface{}
@@ -55,9 +58,29 @@ func New(config *Config, opts ...Option) (*Authority, error) {
 		return nil, err
 	}
 
+	var intermediateIdentity *x509util.Identity
+
+	// Decrypt and load intermediate public / private key pair.
+	if len(config.Password) > 0 {
+		intermediateIdentity, err = x509util.LoadIdentityFromDisk(
+			config.IntermediateCert,
+			config.IntermediateKey,
+			pemutil.WithPassword([]byte(config.Password)),
+		)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		intermediateIdentity, err = x509util.LoadIdentityFromDisk(config.IntermediateCert, config.IntermediateKey)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return &Authority{
-		config:   config,
-		stepAuth: stepAuth,
+		config:               config,
+		stepAuth:             stepAuth,
+		intermediateIdentity: intermediateIdentity,
 	}, nil
 }
 
@@ -89,7 +112,19 @@ func (a *Authority) Root(shasum string) (*x509.Certificate, error) {
 }
 
 func (a *Authority) Sign(cr *x509.CertificateRequest, opts stepProvisioner.Options, signOpts ...stepProvisioner.SignOption) (*x509.Certificate, *x509.Certificate, error) {
-	return a.stepAuth.Sign(cr, opts, signOpts...)
+	var isOCF bool
+	sOpts := make([]stepProvisioner.SignOption, 0, len(signOpts))
+	for _, o := range signOpts {
+		if _, ok := o.(provisioner.OCFSignOption); ok {
+			isOCF = true
+		} else {
+			sOpts = append(sOpts, o)
+		}
+	}
+	if isOCF {
+		return a.OCFSign(cr, opts, sOpts...)
+	}
+	return a.stepAuth.Sign(cr, opts, sOpts...)
 }
 
 func (a *Authority) Renew(peer *x509.Certificate) (*x509.Certificate, *x509.Certificate, error) {

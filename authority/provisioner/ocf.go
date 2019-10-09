@@ -9,6 +9,8 @@ import (
 
 const OCFPrefix = "ocf-"
 
+type OCFSignOption struct{}
+
 // OCF is the acme provisioner type, an entity that can authorize the OCF
 // provisioning flow.
 type OCF struct {
@@ -56,7 +58,11 @@ func (p *OCF) AuthorizeRevoke(token string) error {
 
 // AuthorizeSign validates the given token.
 func (p *OCF) AuthorizeSign(ctx context.Context, v string) ([]stepProvisioner.SignOption, error) {
-	return p.provisioner.AuthorizeSign(ctx, v)
+	opts, err := p.provisioner.AuthorizeSign(ctx, v)
+	if err != nil {
+		return nil, err
+	}
+	return append(opts, OCFSignOption{}), nil
 }
 
 // AuthorizeRenewal is not implemented for the OCF provisioner.
