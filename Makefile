@@ -22,6 +22,27 @@ build-servicecontainer:
 
 build: build-testcontainer build-servicecontainer
 
+make-ca:
+	#docker pull smallstep/step-ca
+	mkdir -p ./test/step-ca/data/secrets
+	echo "password" > ./test/step-ca/data/secrets/password
+	docker run \
+		-it \
+		-v "$(shell pwd)"/test/step-ca/data:/home/step --user $(shell id -u):$(shell id -g) \
+		ocf-step-ca:latest \
+		/bin/bash -c "step ca init -dns localhost -address=:10443 -provisioner=test@localhost -name test -password-file ./secrets/password && step ca provisioner add acme --type ACME"
+
+run-ca:
+    #docker rm -f ocf-step-ca || true
+	docker rm -f ocf-step-ca || true
+	docker run \
+		-d \
+		--network=host \
+		--name=ocf-step-ca \
+		-v /etc/nsswitch.conf:/etc/nsswitch.conf \
+		-v "$(shell pwd)"/test/step-ca/data:/home/step --user $(shell id -u):$(shell id -g) \
+		ocf-step-ca:latest
+
 test: clean build-testcontainer
 	docker run \
 		--network=host \

@@ -11,11 +11,25 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:454adc7f974228ff789428b6dc098638c57a64aa0718f0bd61e53d3cd39d7a75"
+  digest = "1:5f3371d6e432e3c4e0ceabb14b5c0679827ce8b96bbd963fa923977782e8e99b"
   name = "github.com/chzyer/readline"
-  packages = ["."]
+  packages = [
+    ".",
+    "runes",
+  ]
   pruneopts = "UT"
   revision = "2972be24d48e78746da79ba8e24e8b488c9880de"
+
+[[projects]]
+  digest = "1:848ef40f818e59905140552cc49ff3dc1a15f955e4b56d1c5c2cc4b54dbadf0c"
+  name = "github.com/client9/misspell"
+  packages = [
+    ".",
+    "cmd/misspell",
+  ]
+  pruneopts = "UT"
+  revision = "b90dc15cfd220ecf8bbc9043ecb928cef381f011"
+  version = "v0.3.4"
 
 [[projects]]
   digest = "1:21ac9938fb1098b3a7b0dd909fb30878d33231177fac11a2821114eb9c1088ff"
@@ -63,6 +77,14 @@
   pruneopts = "UT"
   revision = "6c65a5562fc06764971b7c5d05c76c75e84bdbf7"
   version = "v1.3.2"
+
+[[projects]]
+  digest = "1:582b704bebaa06b48c29b0cec224a6058a09c86883aaddabde889cd1a5f73e1b"
+  name = "github.com/google/uuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "0cd6bf5da1e1c83f8b45653022c74f71af0538a4"
+  version = "v1.1.1"
 
 [[projects]]
   branch = "master"
@@ -199,7 +221,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:873c113109d72387b88e7cee6c3a5b2bd213370a68031c5b65b8683991d66a9c"
+  digest = "1:5a5a8f9ab5ed526a89e53d413f7d8f5925657d5ab9324d8f762b8fade42950a0"
   name = "github.com/smallstep/certificates"
   packages = [
     "acme",
@@ -214,11 +236,11 @@
     "server",
   ]
   pruneopts = "UT"
-  revision = "e2858e17b0948386a9b9303060d78ed0749abb0e"
+  revision = "d123e4d1fb5f90235caa4a36e5d08786276fe6dc"
 
 [[projects]]
   branch = "master"
-  digest = "1:c26dc5debe7fa23c636a116c336aa033f8d7be0d3464d7b363f4b3355dcccf4f"
+  digest = "1:6f5caf828c58adb4e12f9811b3b9e32ae08a9c340227d385ebd9eab2fd34981b"
   name = "github.com/smallstep/cli"
   packages = [
     "command",
@@ -240,7 +262,7 @@
     "utils",
   ]
   pruneopts = "UT"
-  revision = "d68486471cbda18932af18a528861c7c63cde084"
+  revision = "32a92ab5aa77d515a087394349f585b2e338c9e5"
 
 [[projects]]
   branch = "master"
@@ -273,7 +295,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:fb6f979b97a0b1781ef035e0d60102f56c45c650e25fb1b406ddc7c3f4fa130f"
+  digest = "1:f42415ea4796571a01161aac334daad0f484d996259fc5408eee458bb9e39faf"
   name = "golang.org/x/crypto"
   packages = [
     "cryptobyte",
@@ -287,13 +309,14 @@
     "pbkdf2",
     "poly1305",
     "ssh",
+    "ssh/terminal",
   ]
   pruneopts = "UT"
   revision = "34f69633bfdcf9db92f698f8487115767eebef81"
 
 [[projects]]
   branch = "master"
-  digest = "1:e1f078463d92d25ce61a3af82eb0bf09e9a0340a207c6ac4f1afcb051439060d"
+  digest = "1:2c119479488ff08dd65e9b6823007057d5022e02f17d8dda78b2f05249c64b99"
   name = "golang.org/x/net"
   packages = [
     "html",
@@ -306,18 +329,19 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "72f939374954d0a1b2a1e27dcda950e2724dd5c1"
+  revision = "d66e71096ffb9f08f36d9aefcae80ce319de6d68"
 
 [[projects]]
   branch = "master"
-  digest = "1:7f43afd854a838d8791d363a30b1aba91e64048225d995c5b412eee88f97e979"
+  digest = "1:5251325d8b457cf0d24d90a6dcd9c9a03d8a34efe0308ed9e9e0dc114eef0942"
   name = "golang.org/x/sys"
   packages = [
     "cpu",
     "unix",
+    "windows",
   ]
   pruneopts = "UT"
-  revision = "543471e840be449c53d44b32c7adf1261ad67e37"
+  revision = "06d7bd2c5f4f4a6cc6e910b611851044253bd7d1"
 
 [[projects]]
   digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
@@ -360,7 +384,7 @@
     "internal/semver",
   ]
   pruneopts = "UT"
-  revision = "6536af71d98a5bb8f2cbd2f5e62afc2f6cc93dbb"
+  revision = "b090f1f240286c4dde48a5c0be353d1a5b594ede"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
@@ -388,6 +412,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/go-chi/chi",
+    "github.com/google/uuid",
     "github.com/pkg/errors",
     "github.com/smallstep/certificates/acme",
     "github.com/smallstep/certificates/acme/api",
@@ -402,7 +427,9 @@
     "github.com/smallstep/cli/command",
     "github.com/smallstep/cli/command/version",
     "github.com/smallstep/cli/config",
+    "github.com/smallstep/cli/crypto/pemutil",
     "github.com/smallstep/cli/crypto/tlsutil",
+    "github.com/smallstep/cli/crypto/x509util",
     "github.com/smallstep/cli/errs",
     "github.com/smallstep/cli/usage",
     "github.com/smallstep/nosql",

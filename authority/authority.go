@@ -4,9 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"strings"
-
-	"github.com/go-ocf/step-ca/authority/provisioner"
 
 	"github.com/smallstep/certificates/authority"
 	stepAuthority "github.com/smallstep/certificates/authority"
@@ -112,19 +109,10 @@ func (a *Authority) Root(shasum string) (*x509.Certificate, error) {
 }
 
 func (a *Authority) Sign(cr *x509.CertificateRequest, opts stepProvisioner.Options, signOpts ...stepProvisioner.SignOption) (*x509.Certificate, *x509.Certificate, error) {
-	var isOCF bool
-	sOpts := make([]stepProvisioner.SignOption, 0, len(signOpts))
-	for _, o := range signOpts {
-		if _, ok := o.(provisioner.OCFSignOption); ok {
-			isOCF = true
-		} else {
-			sOpts = append(sOpts, o)
-		}
+	if a.isOCF(signOpts) {
+		return a.OCFSign(cr, opts, signOpts...)
 	}
-	if isOCF {
-		return a.OCFSign(cr, opts, sOpts...)
-	}
-	return a.stepAuth.Sign(cr, opts, sOpts...)
+	return a.stepAuth.Sign(cr, opts, signOpts...)
 }
 
 func (a *Authority) Renew(peer *x509.Certificate) (*x509.Certificate, *x509.Certificate, error) {
@@ -132,41 +120,15 @@ func (a *Authority) Renew(peer *x509.Certificate) (*x509.Certificate, *x509.Cert
 }
 
 func (a *Authority) LoadProvisionerByCertificate(c *x509.Certificate) (stepProvisioner.Interface, error) {
-	p, err := a.stepAuth.LoadProvisionerByCertificate(c)
-	if err != nil {
-		return p, err
-	}
-	if strings.HasPrefix(strings.ToLower(p.GetName()), provisioner.OCFPrefix) {
-		return provisioner.NewOCF(p), nil
-	}
-	return p, err
+	return a.stepAuth.LoadProvisionerByCertificate(c)
 }
 
 func (a *Authority) LoadProvisionerByID(ID string) (stepProvisioner.Interface, error) {
-	p, err := a.stepAuth.LoadProvisionerByID(ID)
-	if err != nil {
-		return p, err
-	}
-	if strings.HasPrefix(strings.ToLower(p.GetName()), provisioner.OCFPrefix) {
-		return provisioner.NewOCF(p), nil
-	}
-	return p, err
+	return a.stepAuth.LoadProvisionerByID(ID)
 }
 
 func (a *Authority) GetProvisioners(cursor string, limit int) (stepProvisioner.List, string, error) {
-	list, v, err := a.stepAuth.GetProvisioners(cursor, limit)
-	if err != nil {
-		return list, v, err
-	}
-	res := make(stepProvisioner.List, 0, len(list))
-	for _, p := range list {
-		if strings.HasPrefix(strings.ToLower(p.GetName()), provisioner.OCFPrefix) {
-			res = append(res, provisioner.NewOCF(p))
-		} else {
-			res = append(res, p)
-		}
-	}
-	return res, v, err
+	return a.stepAuth.GetProvisioners(cursor, limit)
 }
 
 func (a *Authority) Revoke(opts *authority.RevokeOptions) error {

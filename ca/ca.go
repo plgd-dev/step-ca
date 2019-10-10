@@ -125,7 +125,10 @@ func (ca *CA) Init(config *authority.Config) (*CA, error) {
 	}
 
 	prefix := "acme"
-	acmeAuth := acme.NewAuthority(auth.GetDatabase().(nosql.DB), dns, prefix, auth)
+	acmeAuth, err := acme.NewAuthority(auth.GetDatabase().(nosql.DB), dns, prefix, auth)
+	if err != nil {
+		return nil, err
+	}
 	acmeRouterHandler := acmeAPI.New(acmeAuth)
 	mux.Route("/"+prefix, func(r chi.Router) {
 		acmeRouterHandler.Route(r)
