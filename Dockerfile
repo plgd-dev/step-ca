@@ -12,9 +12,9 @@ FROM smallstep/step-cli:latest as service
 ENV CONFIGPATH="/home/step/config/ca.json"
 ENV PWDPATH="/home/step/secrets/password"
 
-COPY --from=build /go/bin/service /usr/local/bin/service
+COPY --from=build /go/bin/service /usr/local/bin/step-ca
 
 VOLUME ["/home/step"]
 STOPSIGNAL SIGTERM
 
-CMD exec /bin/sh -c "/usr/local/bin/service --password-file $PWDPATH $CONFIGPATH"
+CMD exec /bin/sh -c "/usr/local/bin/step-ca --password-file $PWDPATH $CONFIGPATH"
