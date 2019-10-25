@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -294,10 +295,17 @@ func (hc *http01Challenge) validate(db nosql.DB, jwk *jose.JSONWebKey, vo valida
 	}
 	url := fmt.Sprintf("http://%s/.well-known/acme-challenge/%s", hc.Value, hc.Token)
 
+	conn, err := net.DialTimeout("tcp", hc.Value, time.Second)
+	fmt.Printf("DEBUG http01Challenge.validate.dial %v: %v\n", hc.Value, err)
+	if err == nil {
+		conn.Close()
+	}
+
 	now := time.Now()
 	fmt.Printf("DEBUG http01Challenge.validate before %v\n", url)
 	resp, err := vo.httpGet(url)
 	fmt.Printf("DEBUG http01Challenge.validate after %v %v: %v\n", url, time.Since(now), err)
+
 	if err != nil {
 		if err = hc.storeError(db, ConnectionErr(errors.Wrapf(err,
 			"error doing http GET for url %s", url))); err != nil {
