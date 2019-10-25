@@ -295,8 +295,12 @@ func (hc *http01Challenge) validate(db nosql.DB, jwk *jose.JSONWebKey, vo valida
 	}
 	url := fmt.Sprintf("http://%s/.well-known/acme-challenge/%s", hc.Value, hc.Token)
 
-	conn, err := net.DialTimeout("tcp", hc.Value, time.Second)
-	fmt.Printf("DEBUG http01Challenge.validate.dial %v: %v\n", hc.Value, err)
+	v := hc.Value
+	if !strings.Contains(v, ":") {
+		v = v + ":80"
+	}
+	conn, err := net.DialTimeout("tcp", v, time.Second)
+	fmt.Printf("DEBUG http01Challenge.validate.dial %v: %v\n", v, err)
 	if err == nil {
 		conn.Close()
 	}
