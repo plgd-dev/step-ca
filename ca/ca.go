@@ -88,9 +88,9 @@ func logMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		dump, _ := httputil.DumpRequest(r, true)
 
-		log.Println("-------------------- Request -------------------->")
+		log.Println("-------------------- Request START-------------------")
 		log.Println(string(dump))
-		log.Println("<------------------- Request ---------------------")
+		log.Println("-------------------- Request END --------------------")
 
 		c := httptest.NewRecorder()
 
@@ -102,9 +102,14 @@ func logMiddleware(next http.Handler) http.Handler {
 
 		w.WriteHeader(c.Code)
 
-		log.Println("-------------------- Response -------------------->")
+		log.Println("-------------------- Response START ------------------")
+		log.Printf("Code %v\n", c.Code)
+		for k, v := range c.HeaderMap {
+			log.Printf("%v %v\n", k, strings.Join(v, ""))
+		}
+		log.Println()
 		log.Println(string(c.Body.Bytes()))
-		log.Println("<------------------- Response ---------------------")
+		log.Println("-------------------- Response END---------------------")
 
 		c.Body.WriteTo(w)
 	})
