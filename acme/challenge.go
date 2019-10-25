@@ -294,7 +294,9 @@ func (hc *http01Challenge) validate(db nosql.DB, jwk *jose.JSONWebKey, vo valida
 	}
 	url := fmt.Sprintf("http://%s/.well-known/acme-challenge/%s", hc.Value, hc.Token)
 
+	fmt.Printf("DEBUG http01Challenge.validate before %v\n", url)
 	resp, err := vo.httpGet(url)
+	fmt.Printf("DEBUG http01Challenge.validate after %v\n", url)
 	if err != nil {
 		if err = hc.storeError(db, ConnectionErr(errors.Wrapf(err,
 			"error doing http GET for url %s", url))); err != nil {
@@ -385,7 +387,9 @@ func (dc *dns01Challenge) validate(db nosql.DB, jwk *jose.JSONWebKey, vo validat
 		return dc, nil
 	}
 
+	fmt.Printf("DEBUG dns01Challenge.validate before %v\n", "_acme-challenge."+dc.Value)
 	txtRecords, err := vo.lookupTxt("_acme-challenge." + dc.Value)
+	fmt.Printf("DEBUG dns01Challenge.validate after %v\n", "_acme-challenge."+dc.Value)
 	if err != nil {
 		if err = dc.storeError(db,
 			DNSErr(errors.Wrapf(err, "error looking up TXT "+
