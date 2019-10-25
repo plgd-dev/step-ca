@@ -6,8 +6,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/http/httptest"
+	"net/http/httputil"
 	"net/url"
 	"reflect"
+	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/go-ocf/step-ca/authority"
@@ -81,6 +84,32 @@ func New(config *authority.Config, opts ...Option) (*CA, error) {
 	return ca.Init(config)
 }
 
+func logMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		dump, _ := httputil.DumpRequest(r, true)
+
+		log.Println("-------------------- Request -------------------->")
+		log.Println(string(dump))
+		log.Println("<------------------- Request ---------------------")
+
+		c := httptest.NewRecorder()
+
+		next.ServeHTTP(c, r)
+
+		for k, v := range c.HeaderMap {
+			w.Header().Set(k, strings.Join(v, ""))
+		}
+
+		w.WriteHeader(c.Code)
+
+		log.Println("-------------------- Response -------------------->")
+		log.Println(string(c.Body.Bytes()))
+		log.Println("<------------------- Response ---------------------")
+
+		c.Body.WriteTo(w)
+	})
+}
+
 // Init initializes the CA with the given configuration.
 func (ca *CA) Init(config *authority.Config) (*CA, error) {
 	if l := len(ca.opts.password); l > 0 {
@@ -104,6 +133,7 @@ func (ca *CA) Init(config *authority.Config) (*CA, error) {
 
 	// Using chi as the main router
 	mux := chi.NewRouter()
+	mux.Use(logMiddleware)
 	handler := http.Handler(mux)
 
 	// Add regular CA api endpoints in / and /1.0
