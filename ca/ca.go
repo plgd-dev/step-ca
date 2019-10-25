@@ -13,10 +13,10 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi"
+	"github.com/go-ocf/step-ca/acme"
+	acmeAPI "github.com/go-ocf/step-ca/acme/api"
 	"github.com/go-ocf/step-ca/authority"
 	"github.com/pkg/errors"
-	"github.com/smallstep/certificates/acme"
-	acmeAPI "github.com/smallstep/certificates/acme/api"
 	"github.com/smallstep/certificates/api"
 	stepCA "github.com/smallstep/certificates/ca"
 	"github.com/smallstep/certificates/db"
@@ -160,10 +160,7 @@ func (ca *CA) Init(config *authority.Config) (*CA, error) {
 	}
 
 	prefix := "acme"
-	acmeAuth, err := acme.NewAuthority(auth.GetDatabase().(nosql.DB), dns, prefix, auth)
-	if err != nil {
-		return nil, err
-	}
+	acmeAuth := acme.NewAuthority(auth.GetDatabase().(nosql.DB), dns, prefix, auth)
 	acmeRouterHandler := acmeAPI.New(acmeAuth)
 	mux.Route("/"+prefix, func(r chi.Router) {
 		acmeRouterHandler.Route(r)
