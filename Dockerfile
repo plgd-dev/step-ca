@@ -13,7 +13,6 @@ ENV CONFIGPATH="/home/step/config/ca.json"
 ENV PWDPATH="/home/step/secrets/password"
 
 COPY --from=build /go/bin/service /usr/local/bin/step-ca
-COPY ./nsswitch.conf /etc/nsswitch.conf
 
 VOLUME ["/home/step"]
 STOPSIGNAL SIGTERM
