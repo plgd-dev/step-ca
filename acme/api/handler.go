@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/pkg/errors"
 	"github.com/go-ocf/step-ca/acme"
+	"github.com/pkg/errors"
 	"github.com/smallstep/certificates/api"
 	"github.com/smallstep/certificates/authority/provisioner"
 	"github.com/smallstep/cli/jose"
@@ -131,6 +131,7 @@ func (h *Handler) GetDirectory(w http.ResponseWriter, r *http.Request) {
 
 // GetAuthz ACME api for retrieving an Authz.
 func (h *Handler) GetAuthz(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("DEBUG GetAuthz\n")
 	prov, err := provisionerFromContext(r)
 	if err != nil {
 		api.WriteError(w, err)

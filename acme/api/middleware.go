@@ -105,7 +105,6 @@ func (h *Handler) parseJWS(next nextHTTP) nextHTTP {
 			api.WriteError(w, acme.MalformedErr(errors.Wrap(err, "failed to parse JWS from request body")))
 			return
 		}
-		fmt.Printf("DEBUG parseJWS.body %v\n", string(body))
 		ctx := context.WithValue(r.Context(), jwsContextKey, jws)
 		next(w, r.WithContext(ctx))
 		return
@@ -346,8 +345,6 @@ func (h *Handler) verifyAndExtractJWSPayload(next nextHTTP) nextHTTP {
 			api.WriteError(w, acme.MalformedErr(errors.New("verifier and signature algorithm do not match")))
 			return
 		}
-		p, _ := jws.CompactSerialize()
-		fmt.Printf("DEBUG verifyAndExtractJWSPayload.CompactSerialize %+v\n", p)
 		payload, err := jws.Verify(jwk)
 		if err != nil {
 			api.WriteError(w, acme.MalformedErr(errors.Wrap(err, "error verifying jws")))
@@ -372,6 +369,7 @@ func (h *Handler) isPostAsGet(next nextHTTP) nextHTTP {
 			api.WriteError(w, err)
 			return
 		}
+		fmt.Printf("DEBUG isPostAsGet.payload.isPostAsGet %v\n", payload.isPostAsGet)
 		if !payload.isPostAsGet {
 			api.WriteError(w, acme.MalformedErr(errors.Errorf("expected POST-as-GET")))
 			return
