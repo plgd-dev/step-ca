@@ -299,10 +299,23 @@ func (hc *http01Challenge) validate(db nosql.DB, jwk *jose.JSONWebKey, vo valida
 	if !strings.Contains(v, ":") {
 		v = v + ":80"
 	}
-	conn, err := net.DialTimeout("tcp", v, time.Second)
-	fmt.Printf("DEBUG http01Challenge.validate.dial %v: %v\n", v, err)
-	if err == nil {
-		conn.Close()
+
+	var err error
+	var conn net.Conn
+	for i:=0; i < 10; i++ {
+		conn, err = net.DialTimeout("tcp", v, time.Second)
+		fmt.Printf("DEBUG http01Challenge.validate.dial %v %v: %v\n", i, v, err)
+		if err == nil {
+			conn.Close()
+			break
+		}
+	}
+	if err != nil {
+		if err = hc.storeError(db, ConnectionErr(errors.Wrapf(err,
+			"error doing http GET for url %s", url))); err != nil {
+			return nil, err
+		}
+		return hc, nil
 	}
 
 	now := time.Now()
