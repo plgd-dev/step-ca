@@ -312,13 +312,18 @@ func (hc *http01Challenge) validate(db nosql.DB, jwk *jose.JSONWebKey, vo valida
 	}
 	var err error
 	var conn net.Conn
+	var resp *http.Response
 	for i := 0; i < numRetries; i++ {
 		delayTo := time.Now().Add(time.Second)
 		conn, err = net.DialTimeout("tcp", v, time.Second)
 		fmt.Printf("DEBUG http01Challenge.validate.dial %v %v: %v\n", i, v, err)
 		if err == nil {
 			conn.Close()
-			break
+			resp, err = vo.httpGet(url)
+			if err == nil {
+				break
+			}
+			fmt.Printf("DEBUG http01Challenge.validate.httpGet %v %v: %v\n", i, v, err)
 		}
 		<-time.After(time.Until(delayTo))
 	}
@@ -330,18 +335,6 @@ func (hc *http01Challenge) validate(db nosql.DB, jwk *jose.JSONWebKey, vo valida
 		return hc, nil
 	}
 
-	now := time.Now()
-	fmt.Printf("DEBUG http01Challenge.validate before %v\n", url)
-	resp, err := vo.httpGet(url)
-	fmt.Printf("DEBUG http01Challenge.validate after %v %v: %v\n", url, time.Since(now), err)
-
-	if err != nil {
-		if err = hc.storeError(db, ConnectionErr(errors.Wrapf(err,
-			"error doing http GET for url %s", url))); err != nil {
-			return nil, err
-		}
-		return hc, nil
-	}
 	if resp.StatusCode >= 400 {
 		if err = hc.storeError(db,
 			ConnectionErr(errors.Errorf("error doing http GET for url %s with status code %d",
