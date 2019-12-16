@@ -9,6 +9,8 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -300,15 +302,25 @@ func (hc *http01Challenge) validate(db nosql.DB, jwk *jose.JSONWebKey, vo valida
 		v = v + ":80"
 	}
 
+	retries := os.Getenv("CHALLENGE_DIAL_RETRIES_COUNT")
+	numRetries := 10
+	if retries != "" {
+		num, err := strconv.Atoi(retries)
+		if err == nil {
+			numRetries = num
+		}
+	}
 	var err error
 	var conn net.Conn
-	for i:=0; i < 10; i++ {
+	for i := 0; i < numRetries; i++ {
+		delayTo := time.Now().Add(time.Second)
 		conn, err = net.DialTimeout("tcp", v, time.Second)
 		fmt.Printf("DEBUG http01Challenge.validate.dial %v %v: %v\n", i, v, err)
 		if err == nil {
 			conn.Close()
 			break
 		}
+		<-time.After(time.Until(delayTo))
 	}
 	if err != nil {
 		if err = hc.storeError(db, ConnectionErr(errors.Wrapf(err,
