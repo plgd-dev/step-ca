@@ -21,12 +21,11 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/rs/xid v1.2.1 // indirect
 	github.com/samfoo/ansi v0.0.0-20160124022901-b6bd2ded7189 // indirect
-	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/smallstep/certificates v0.13.4-0.20191009223224-d123e4d1fb5f
 	github.com/smallstep/cli v0.13.4-0.20191009191544-32a92ab5aa77
 	github.com/smallstep/nosql v0.2.0
-	github.com/urfave/cli v1.20.1-0.20181029213200-b67dcf995b6a
+	github.com/urfave/cli v1.22.2
 	go.etcd.io/bbolt v1.3.3 // indirect
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/net v0.0.0-20191009170851-d66e71096ffb // indirect
