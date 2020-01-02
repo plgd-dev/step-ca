@@ -7,10 +7,7 @@ require (
 	github.com/chzyer/logex v1.1.10 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1 // indirect
-	github.com/dgraph-io/badger v1.5.3 // indirect
-	github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2 // indirect
 	github.com/go-chi/chi v4.0.3-0.20191003102842-906b567ebae8+incompatible
-	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/juju/ansiterm v0.0.0-20180109212912-720a0952cc2a // indirect
@@ -26,11 +23,9 @@ require (
 	github.com/samfoo/ansi v0.0.0-20160124022901-b6bd2ded7189 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.4.2 // indirect
-	github.com/smallstep/assert v0.0.0-20180720014142-de77670473b5 // indirect
 	github.com/smallstep/certificates v0.13.4-0.20191009223224-d123e4d1fb5f
 	github.com/smallstep/cli v0.13.4-0.20191009191544-32a92ab5aa77
-	github.com/smallstep/nosql v0.1.1-0.20191009043502-4b26d8029e61
-	github.com/stretchr/testify v1.3.0 // indirect
+	github.com/smallstep/nosql v0.2.0
 	github.com/urfave/cli v1.20.1-0.20181029213200-b67dcf995b6a
 	go.etcd.io/bbolt v1.3.3 // indirect
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
