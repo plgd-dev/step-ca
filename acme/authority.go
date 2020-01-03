@@ -240,7 +240,7 @@ func (a *Authority) ValidateChallenge(p provisioner.Interface, accID, chID strin
 	}
 	client := retryablehttp.NewClient()
 	client.HTTPClient = &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 20 * time.Second,
 	}
 	client.RetryWaitMin = 100 * time.Millisecond
 	client.RetryWaitMax = 1 * time.Second
