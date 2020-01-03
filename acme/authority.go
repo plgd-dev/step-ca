@@ -238,14 +238,13 @@ func (a *Authority) ValidateChallenge(p provisioner.Interface, accID, chID strin
 	if accID != ch.getAccountID() {
 		return nil, UnauthorizedErr(errors.New("account does not own challenge"))
 	}
-	client := retryablehttp.Client{
-		HTTPClient: &http.Client{
-			Timeout: 30 * time.Second,
-		},
-		RetryWaitMin: 100 * time.Millisecond,
-		RetryWaitMax: 1 * time.Second,
-		RetryMax:     10,
+	client := retryablehttp.NewClient()
+	client.HTTPClient = &http.Client{
+		Timeout: 30 * time.Second,
 	}
+	client.RetryWaitMin = 100 * time.Millisecond
+	client.RetryWaitMax = 1 * time.Second
+	client.RetryMax = 10
 	ch, err = ch.validate(a.db, jwk, validateOptions{
 		httpGet:   client.Get,
 		lookupTxt: net.LookupTXT,
