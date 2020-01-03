@@ -9,11 +9,11 @@ import (
 	"net/url"
 	"time"
 
+	retryablehttp "github.com/hashicorp/go-retryablehttp"
 	"github.com/pkg/errors"
 	"github.com/smallstep/certificates/authority/provisioner"
 	"github.com/smallstep/cli/jose"
 	"github.com/smallstep/nosql"
-	retryablehttp "github.com/hashicorp/go-retryablehttp"
 )
 
 // Interface is the acme authority interface.
@@ -244,7 +244,7 @@ func (a *Authority) ValidateChallenge(p provisioner.Interface, accID, chID strin
 		},
 		RetryWaitMin: 100 * time.Millisecond,
 		RetryWaitMax: 1 * time.Second,
-		RetryMax: 10,
+		RetryMax:     10,
 	}
 	ch, err = ch.validate(a.db, jwk, validateOptions{
 		httpGet:   client.Get,
