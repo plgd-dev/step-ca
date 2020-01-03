@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"net"
+	"net/http"
 	"net/url"
 	"time"
 
@@ -12,7 +13,7 @@ import (
 	"github.com/smallstep/certificates/authority/provisioner"
 	"github.com/smallstep/cli/jose"
 	"github.com/smallstep/nosql"
-	http "github.com/hashicorp/go-retryablehttp"
+	retryablehttp "github.com/hashicorp/go-retryablehttp"
 )
 
 // Interface is the acme authority interface.
@@ -237,10 +238,13 @@ func (a *Authority) ValidateChallenge(p provisioner.Interface, accID, chID strin
 	if accID != ch.getAccountID() {
 		return nil, UnauthorizedErr(errors.New("account does not own challenge"))
 	}
-	client := http.Client{
+	client := retryablehttp.Client{
+		HTTPClient: &http.Client{
+			Timeout: 30 * time.Second,
+		},
 		RetryWaitMin: 100 * time.Millisecond,
 		RetryWaitMax: 1 * time.Second,
-		RetryMax: 30,
+		RetryMax: 10,
 	}
 	ch, err = ch.validate(a.db, jwk, validateOptions{
 		httpGet:   client.Get,
