@@ -10,6 +10,7 @@ require (
 	github.com/go-chi/chi v4.0.3-0.20191003102842-906b567ebae8+incompatible
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/google/uuid v1.1.1
+	github.com/hashicorp/go-retryablehttp v0.6.4
 	github.com/juju/ansiterm v0.0.0-20180109212912-720a0952cc2a // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
