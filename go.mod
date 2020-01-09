@@ -7,7 +7,7 @@ require (
 	github.com/chzyer/logex v1.1.10 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1 // indirect
-	github.com/go-chi/chi v4.0.3-0.20191003102842-906b567ebae8+incompatible
+	github.com/go-chi/chi v4.0.3+incompatible
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/hashicorp/go-retryablehttp v0.6.4
