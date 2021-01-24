@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/go-chi/chi v4.0.3+incompatible
-	github.com/google/uuid v1.1.1
+	github.com/google/uuid v1.2.0
 	github.com/hashicorp/go-retryablehttp v0.6.4
 	github.com/manifoldco/promptui v0.7.0 // indirect
 	github.com/newrelic/go-agent v3.1.0+incompatible // indirect
