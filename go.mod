@@ -14,7 +14,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/smallstep/certificates v0.13.3
 	github.com/smallstep/cli v0.13.3
-	github.com/smallstep/nosql v0.2.0
+	github.com/smallstep/nosql v0.3.6
 	github.com/urfave/cli v1.22.2
 	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad
 	gopkg.in/square/go-jose.v2 v2.4.1 // indirect
